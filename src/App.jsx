@@ -64,49 +64,52 @@ export default function App() {
   // PARSE QR CONTENT
   // -----------------------------
   const parseQR = (text) => {
-    console.log(text);
+    const parts = text.split("/").map(p => p.trim());
+  
     const fields = {
+      // -------- FIXED POSITION FIELDS --------
+      agency: parts[0] || "",
+      federation: parts[1] || "",
+      society_name: parts[2] || "",
+      rrao: parts[3] || "",
+      exporter: parts[4] || "",
+      year: parts[5] || "",
+      season: parts[6] || "",
+      commodity: parts[7] || "",
+  
+      // -------- KEY : VALUE FIELDS --------
       dispatch_id: "",
       dispatch_date: "",
-      vehicle_no: "",
       truck_sheet_no: "",
-      delivery_challan_no: "",
+      vehicle_no: "",
       total_net_qty: "",
       total_bags: "",
-      timestamp: new Date().toLocaleString(),
     };
-
-    // Split using slashes (/) because your QR uses /
-    const parts = text.split("/");
-
-    parts.forEach((part) => {
-      const p = part.trim();
-
-      if (p.startsWith("Dispatch ID")) {
-        fields.dispatch_id = p.split(":")[1]?.trim() || "";
+  
+    parts.forEach(part => {
+      if (part.startsWith("Dispatch ID")) {
+        fields.dispatch_id = part.split(":")[1]?.trim() || "";
       }
-      if (p.startsWith("Dispatch Date")) {
-        fields.dispatch_date = p.split(":")[1]?.trim() || "";
+      if (part.startsWith("Dispatch Date")) {
+        fields.dispatch_date = part.split(":")[1]?.trim() || "";
       }
-      if (p.startsWith("Vehicle No")) {
-        fields.vehicle_no = p.split(":")[1]?.trim() || "";
+      if (part.startsWith("Truck Sheet No")) {
+        fields.truck_sheet_no = part.split(":")[1]?.trim() || "";
       }
-      if (p.startsWith("Truck Sheet No")) {
-        fields.truck_sheet_no = p.split(":")[1]?.trim() || "";
+      if (part.startsWith("Vehicle No")) {
+        fields.vehicle_no = part.split(":")[1]?.trim() || "";
       }
-      if (p.startsWith("Delivery Challan No")) {
-        fields.delivery_challan_no = p.split(":")[1]?.trim() || "";
+      if (part.startsWith("Total Net Qty")) {
+        fields.total_net_qty = part.split(":")[1]?.trim() || "";
       }
-      if (p.startsWith("Total Net Qty")) {
-        fields.total_net_qty = p.split(":")[1]?.trim() || "";
-      }
-      if (p.startsWith("Total Bags")) {
-        fields.total_bags = p.split(":")[1]?.trim() || "";
+      if (part.startsWith("Total Bags")) {
+        fields.total_bags = part.split(":")[1]?.trim() || "";
       }
     });
-
+  
     return fields;
   };
+  
 
   // -----------------------------
   // DOWNLOAD EXCEL
